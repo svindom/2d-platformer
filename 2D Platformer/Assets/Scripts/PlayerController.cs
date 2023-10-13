@@ -5,24 +5,33 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
+    Rigidbody2D _rb;
+    Animator _animator;
+
+    [Header("Move info")]
     public float _moveSpeed;
-    public Rigidbody2D _rb;
     public float _jumpForce;
 
     float _movingInput;
 
+    bool _canDoubleJump = true;
+
+    [Header("Collision info")]
     public LayerMask _whatIsGround;
     public float _groundCheckDistance;
     bool _isGrounded;
-    bool _canDoubleJump = true;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
     }
     
     void Update()
     {
+        bool isMoving = _rb.velocity.x != 0;
+        _animator.SetBool("IsMoving", isMoving);
+
         CollisionChecks();
         InputChecks();
 
