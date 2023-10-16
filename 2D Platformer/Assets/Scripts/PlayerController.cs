@@ -21,6 +21,9 @@ public class PlayerController : MonoBehaviour
     public float _groundCheckDistance;
     bool _isGrounded;
 
+    bool _facingRight = true;
+    int _facingDirection = 1;
+
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -29,11 +32,11 @@ public class PlayerController : MonoBehaviour
     
     void Update()
     {
-        bool isMoving = _rb.velocity.x != 0;
-        _animator.SetBool("IsMoving", isMoving);
-
+        AnimationController();
         CollisionChecks();
         InputChecks();
+        FlipController();
+       
 
         if (_isGrounded)
         {
@@ -42,8 +45,13 @@ public class PlayerController : MonoBehaviour
         Move();
     }
 
-
-
+    private void AnimationController()
+    {
+        bool isMoving = _rb.velocity.x != 0;
+        _animator.SetBool("IsMoving", isMoving);
+        _animator.SetBool("isGrounded", _isGrounded);
+        _animator.SetFloat("yVelocity", _rb.velocity.y);
+    }
 
     private void InputChecks()
     {
@@ -76,6 +84,25 @@ public class PlayerController : MonoBehaviour
     private void Jump()
     {
         _rb.velocity = new Vector3(_rb.velocity.x, _jumpForce, 0);
+    }
+
+    private void FlipController()
+    {
+        if( _facingRight && _movingInput < 0)
+        {
+            FlipCharacter();
+        }
+        else if (!_facingRight && _movingInput > 0)
+        {
+            FlipCharacter();
+        }
+    }
+
+    private void FlipCharacter()
+    {
+        _facingDirection *= -1;
+        _facingRight = !_facingRight;
+        transform.Rotate(0, -180, 0);
     }
 
     private void CollisionChecks()
