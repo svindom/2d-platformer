@@ -83,7 +83,11 @@ public class PlayerController : MonoBehaviour
 
     private void JumpButton()
     {
-        if (_isGrounded)
+        if (_isWallSliding) 
+        {
+            WallJump();
+        }
+        else if (_isGrounded)
         {
             _canDoubleJump = true;
             Jump();
@@ -99,6 +103,11 @@ public class PlayerController : MonoBehaviour
     {
         _movingInput = Input.GetAxisRaw("Horizontal");
         _rb.velocity = new Vector3(_moveSpeed * _movingInput, _rb.velocity.y, 0);
+    }
+
+    private void WallJump()
+    {
+        _rb.velocity = new Vector2(5 * -_facingDirection, _jumpForce);
     }
 
     private void Jump()
